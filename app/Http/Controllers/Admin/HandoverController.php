@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Concerns\ResolvesCurrentHotel;
+use App\Http\Controllers\Concerns\ResolvesCurrentVilla;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\ConversationMessage;
@@ -13,38 +13,38 @@ use Illuminate\View\View;
 
 class HandoverController extends Controller
 {
-    use ResolvesCurrentHotel;
+    use ResolvesCurrentVilla;
 
     public function index(Request $request): View
     {
-        $hotel = $this->currentHotel($request);
+        $villa = $this->currentVilla($request);
 
         $status = $request->query('status', HandoverRequest::STATUS_OPEN);
 
-        $handovers = HandoverRequest::whereHas('conversation', fn ($q) => $q->where('hotel_id', $hotel->id))
+        $handovers = HandoverRequest::whereHas('conversation', fn ($q) => $q->where('villa_id', $villa->id))
             ->where('status', $status)
             ->with('conversation')
             ->latest()
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.handovers.index', compact('hotel', 'handovers', 'status'));
+        return view('admin.handovers.index', compact('villa', 'handovers', 'status'));
     }
 
     public function show(Request $request, HandoverRequest $handover): View
     {
-        $hotel = $this->currentHotel($request);
-        abort_if($handover->conversation->hotel_id !== $hotel->id, 404);
+        $villa = $this->currentVilla($request);
+        abort_if($handover->conversation->villa_id !== $villa->id, 404);
 
         $handover->load('conversation.messages');
 
-        return view('admin.handovers.show', compact('hotel', 'handover'));
+        return view('admin.handovers.show', compact('villa', 'handover'));
     }
 
     public function reply(Request $request, HandoverRequest $handover): RedirectResponse
     {
-        $hotel = $this->currentHotel($request);
-        abort_if($handover->conversation->hotel_id !== $hotel->id, 404);
+        $villa = $this->currentVilla($request);
+        abort_if($handover->conversation->villa_id !== $villa->id, 404);
 
         $data = $request->validate(['message' => ['required', 'string', 'max:2000']]);
 
@@ -58,8 +58,8 @@ class HandoverController extends Controller
 
     public function resolve(Request $request, HandoverRequest $handover): RedirectResponse
     {
-        $hotel = $this->currentHotel($request);
-        abort_if($handover->conversation->hotel_id !== $hotel->id, 404);
+        $villa = $this->currentVilla($request);
+        abort_if($handover->conversation->villa_id !== $villa->id, 404);
 
         $handover->update(['status' => HandoverRequest::STATUS_RESOLVED, 'resolved_at' => now(), 'assigned_to' => $request->user()->id]);
         $handover->conversation->update(['status' => Conversation::STATUS_ACTIVE]);

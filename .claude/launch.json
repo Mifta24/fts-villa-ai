@@ -2,7 +2,7 @@
     "version": "0.0.1",
     "configurations": [
         {
-            "name": "hotel-ai-dev",
+            "name": "villa-ai-dev",
             "runtimeExecutable": "php",
             "runtimeArgs": ["artisan", "dev"],
             "port": 8000

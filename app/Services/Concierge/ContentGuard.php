@@ -7,7 +7,7 @@ namespace App\Services\Concierge;
  * an uncensored one, so asking it politely to stay clean is not enough: rude,
  * sexual or illegal messages are answered with a fixed reply without ever
  * reaching the model, and a model reply that still contains such words is
- * replaced. Patterns are deliberately narrow so ordinary hotel questions
+ * replaced. Patterns are deliberately narrow so ordinary villa questions
  * ("are dogs allowed?", "is there a pork-free menu?") are never blocked.
  */
 class ContentGuard
@@ -23,7 +23,7 @@ class ContentGuard
         '(?:dasar|lu|lo|loe|elu|kamu|kau|dasar)\s+(?:anjing|anjir|asu|babi|monyet|bodoh|bego|idiot|sampah)',
         '(?:anjing|asu|babi|monyet)\s+(?:lu|lo|loe|elu|kamu|kau|banget|kau)',
         '(?:maki|caci|hina)(?:-|\s)?(?:maki|caci|hina)?\s*(?:saya|aku|gue|gw)',
-        '(?:pemilik|owner)\w*\s+(?:hotel\s+)?(?:ini\s+)?(?:babi|anjing|bangsat)',
+        '(?:pemilik|owner)\w*\s+(?:villa\s+)?(?:ini\s+)?(?:babi|anjing|bangsat)',
         // Indonesian sexual
         '(?:porno|bokep|mesum|cabul|sange|colmek|coli|onani|bugil|telanjang|ml\s+yuk|ngeseks|seks|sex|sexy|seksi)',
         '(?:cewek|wanita|perempuan|cowok|pria|lelaki)\s+(?:panggilan|bayaran|sewaan)',
@@ -50,9 +50,9 @@ class ContentGuard
     ];
 
     private const REFUSALS = [
-        'id' => 'Maaf, saya tidak bisa membantu dengan hal itu. Saya siap membantu soal kamar, fasilitas, reservasi, atau menghubungkan Anda dengan staf hotel.',
-        'en' => 'Sorry, I cannot help with that. I am happy to help with rooms, facilities, reservations, or connecting you with the hotel team.',
-        'ja' => '申し訳ございませんが、そのご依頼にはお応えできません。お部屋、施設、ご予約、スタッフへのご連絡でしたらお手伝いいたします。',
+        'id' => 'Maaf, saya tidak bisa membantu dengan hal itu. Saya siap membantu soal villa, fasilitas, reservasi, atau menghubungkan Anda dengan staf villa.',
+        'en' => 'Sorry, I cannot help with that. I am happy to help with villas, facilities, reservations, or connecting you with the villa team.',
+        'ja' => '申し訳ございませんが、そのご依頼にはお応えできません。ヴィラ、施設、ご予約、スタッフへのご連絡でしたらお手伝いいたします。',
     ];
 
     /**

@@ -4,14 +4,14 @@ use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HandoverController;
 use App\Http\Controllers\Admin\KnowledgeItemController;
-use App\Http\Controllers\Admin\RoomTypeController;
+use App\Http\Controllers\Admin\UnitTypeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ConciergeChatController;
-use App\Http\Controllers\HotelPageController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\VillaPageController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HotelPageController::class, 'index'])->name('home');
+Route::get('/', [VillaPageController::class, 'index'])->name('home');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -23,7 +23,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('room-types', RoomTypeController::class)->except('show');
+        Route::resource('unit-types', UnitTypeController::class)->except('show');
         Route::resource('knowledge-items', KnowledgeItemController::class)->except('show');
 
         Route::get('bookings', [BookingController::class, 'index'])->name('bookings.index');
@@ -36,15 +36,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-Route::prefix('{hotelSlug}')->group(function () {
-    Route::get('/', [HotelPageController::class, 'show'])->name('hotel.show');
-    Route::get('rooms', [HotelPageController::class, 'rooms'])->name('hotel.rooms');
-    Route::get('rooms/{roomSlug}', [HotelPageController::class, 'room'])->name('hotel.room');
-    Route::get('facilities', [HotelPageController::class, 'facilities'])->name('hotel.facilities');
-    Route::get('facilities/{facilityId}', [HotelPageController::class, 'facility'])->whereNumber('facilityId')->name('hotel.facility');
-    Route::get('info', [HotelPageController::class, 'info'])->name('hotel.info');
-    Route::get('staff', [HotelPageController::class, 'staff'])->name('hotel.staff');
-    Route::get('reservation', [HotelPageController::class, 'reservationScene'])->name('hotel.reservation');
+Route::prefix('{villaSlug}')->group(function () {
+    Route::get('/', [VillaPageController::class, 'show'])->name('villa.show');
+    Route::get('units', [VillaPageController::class, 'units'])->name('villa.units');
+    Route::get('units/{unitSlug}', [VillaPageController::class, 'unit'])->name('villa.unit');
+    Route::get('facilities', [VillaPageController::class, 'facilities'])->name('villa.facilities');
+    Route::get('facilities/{facilityId}', [VillaPageController::class, 'facility'])->whereNumber('facilityId')->name('villa.facility');
+    Route::get('info', [VillaPageController::class, 'info'])->name('villa.info');
+    Route::get('staff', [VillaPageController::class, 'staff'])->name('villa.staff');
+    Route::get('reservation', [VillaPageController::class, 'reservationScene'])->name('villa.reservation');
 
     Route::prefix('reservation')->name('reservation.')->middleware('throttle:20,1')->group(function () {
         Route::post('quote', [ReservationController::class, 'quote'])->name('quote');

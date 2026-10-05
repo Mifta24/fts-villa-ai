@@ -25,3 +25,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Salinan lokal repo hotel lama, bukan bagian dari project ini
+/fts-hotel-ai/

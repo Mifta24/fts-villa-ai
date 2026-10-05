@@ -2,24 +2,24 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Hotel;
+use App\Models\Villa;
 use App\Services\Concierge\ConciergeService;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('concierge:chat {hotel? : Hotel slug} {--locale=id : id|en|ja}')]
-#[Description('Talk to the AI Concierge for a hotel from the terminal, for testing the tool-calling loop before the web UI exists.')]
+#[Signature('concierge:chat {villa? : Villa slug} {--locale=id : id|en|ja}')]
+#[Description('Talk to the AI Concierge for a villa from the terminal, for testing the tool-calling loop before the web UI exists.')]
 class ConciergeChatCommand extends Command
 {
     public function handle(ConciergeService $service): int
     {
-        $hotel = $this->argument('hotel')
-            ? Hotel::where('slug', $this->argument('hotel'))->first()
-            : Hotel::first();
+        $villa = $this->argument('villa')
+            ? Villa::where('slug', $this->argument('villa'))->first()
+            : Villa::first();
 
-        if (! $hotel) {
-            $this->error('No hotel found. Seed one first: php artisan db:seed');
+        if (! $villa) {
+            $this->error('No villa found. Seed one first: php artisan db:seed');
 
             return self::FAILURE;
         }
@@ -31,9 +31,9 @@ class ConciergeChatCommand extends Command
         }
 
         $locale = $this->option('locale');
-        $conversation = $service->startConversation($hotel, $locale);
+        $conversation = $service->startConversation($villa, $locale);
 
-        $this->info("Chatting with the AI Concierge for {$hotel->name} ({$locale}). Type 'exit' to quit.");
+        $this->info("Chatting with the AI Concierge for {$villa->name} ({$locale}). Type 'exit' to quit.");
         $this->newLine();
 
         while (true) {
@@ -43,7 +43,7 @@ class ConciergeChatCommand extends Command
                 break;
             }
 
-            $message = $service->reply($hotel, $conversation, $guestMessage);
+            $message = $service->reply($villa, $conversation, $guestMessage);
 
             $this->newLine();
             $this->line('<fg=cyan>Concierge:</> '.($message->content ?? '(no text — see UI payload below)'));

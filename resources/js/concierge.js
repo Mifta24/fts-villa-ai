@@ -1,7 +1,7 @@
 /**
  * AI Concierge chat panel. Vanilla JS, no framework: sends guest messages to
  * the Laravel backend and renders both plain text and the structured
- * ui_payload the AI's tools attach (room cards, price quotes, booking
+ * ui_payload the AI's tools attach (unit cards, price quotes, booking
  * confirmations, handover notices) as real DOM, not markdown-in-a-bubble.
  */
 function initConcierge() {
@@ -17,7 +17,7 @@ function initConcierge() {
         locale: root.dataset.locale,
         currency: root.dataset.currency,
         lobbyUrl: root.dataset.lobbyUrl,
-        roomUrlTemplate: root.dataset.roomUrl,
+        unitUrlTemplate: root.dataset.unitUrl,
         staffUrl: root.dataset.staffUrl,
         reservationUrlTemplate: root.dataset.reservationUrl,
         labels: {
@@ -28,7 +28,7 @@ function initConcierge() {
             intro: root.dataset.labelIntro,
             breakfastIncluded: root.dataset.labelBreakfastIncluded,
             maxGuests: root.dataset.labelMaxGuests,
-            roomOnly: root.dataset.labelRoomOnly,
+            unitOnly: root.dataset.labelUnitOnly,
             night: root.dataset.labelNight,
             noAvailability: root.dataset.labelNoAvailability,
             bookingReceived: root.dataset.labelBookingReceived,
@@ -44,7 +44,7 @@ function initConcierge() {
             draftKeep: root.dataset.labelDraftKeep,
             draftDiscard: root.dataset.labelDraftDiscard,
             viewDetails: root.dataset.labelViewDetails,
-            roomDetailsQuestion: root.dataset.labelRoomDetailsQuestion,
+            unitDetailsQuestion: root.dataset.labelUnitDetailsQuestion,
             bookNow: root.dataset.labelBookNow,
             menuHeading: root.dataset.labelMenuHeading,
             staff: root.dataset.labelStaff,
@@ -233,45 +233,45 @@ function initConcierge() {
         return wrap;
     }
 
-    function roomResultCard(room) {
+    function unitResultCard(unit) {
         const el = document.createElement('div');
         el.className = 'overflow-hidden rounded-xl border border-stone-200 bg-white';
         el.innerHTML = `
-            ${room.thumbnail_url ? `<img src="${room.thumbnail_url}" alt="${room.name}" class="h-32 w-full object-cover">` : ''}
+            ${unit.thumbnail_url ? `<img src="${unit.thumbnail_url}" alt="${unit.name}" class="h-32 w-full object-cover">` : ''}
             <div class="p-3">
-                <p class="font-medium text-stone-900">${room.name}</p>
-                <p class="mt-0.5 text-xs text-stone-500">${room.size_sqm ?? '-'} m² · ${room.max_adults + room.max_children} ${config.labels.maxGuests}${room.breakfast_included ? ` · ${config.labels.breakfastIncluded}` : ''}</p>
-                <p class="mt-1 text-sm font-semibold text-stone-900">${money(room.total_price)} <span class="font-normal text-stone-500">/ ${room.nights} ${config.labels.night}</span></p>
-                <button type="button" class="mt-2 w-full rounded-lg border border-stone-300 px-2 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50" data-detail-slug="${room.room_type_slug}">
+                <p class="font-medium text-stone-900">${unit.name}</p>
+                <p class="mt-0.5 text-xs text-stone-500">${unit.size_sqm ?? '-'} m² · ${unit.max_adults + unit.max_children} ${config.labels.maxGuests}${unit.breakfast_included ? ` · ${config.labels.breakfastIncluded}` : ''}</p>
+                <p class="mt-1 text-sm font-semibold text-stone-900">${money(unit.total_price)} <span class="font-normal text-stone-500">/ ${unit.nights} ${config.labels.night}</span></p>
+                <button type="button" class="mt-2 w-full rounded-lg border border-stone-300 px-2 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50" data-detail-slug="${unit.unit_type_slug}">
                     ${config.labels.viewDetails}
                 </button>
             </div>
         `;
         el.querySelector('[data-detail-slug]').addEventListener('click', () => {
-            sendMessage(config.labels.roomDetailsQuestion.replace(':room', room.name));
+            sendMessage(config.labels.unitDetailsQuestion.replace(':unit', unit.name));
         });
         return el;
     }
 
-    function roomDetailCard(room) {
+    function unitDetailCard(unit) {
         const el = document.createElement('div');
         el.className = 'overflow-hidden rounded-xl border border-stone-200 bg-white';
 
-        const images = (room.images || [])
+        const images = (unit.images || [])
             .slice(0, 4)
-            .map((img) => `<img src="${img.url}" alt="${img.alt || room.name}" class="h-20 w-full rounded-lg object-cover">`)
+            .map((img) => `<img src="${img.url}" alt="${img.alt || unit.name}" class="h-20 w-full rounded-lg object-cover">`)
             .join('');
 
         el.innerHTML = `
             <div class="p-3">
-                <p class="font-medium text-stone-900">${room.name}</p>
-                <p class="mt-1 text-xs text-stone-500">${room.description || ''}</p>
+                <p class="font-medium text-stone-900">${unit.name}</p>
+                <p class="mt-1 text-xs text-stone-500">${unit.description || ''}</p>
                 <div class="mt-2 grid grid-cols-4 gap-1">${images}</div>
                 <dl class="mt-2 grid grid-cols-2 gap-1 text-xs text-stone-500">
-                    <div>${room.size_sqm ?? '-'} m²</div>
-                    <div>${room.max_adults + room.max_children} ${config.labels.maxGuests}</div>
-                    <div>${room.breakfast_included ? config.labels.breakfastIncluded : config.labels.roomOnly}</div>
-                    <div>${room.view_type ? room.view_type + ' ' + config.labels.viewSuffix : ''}</div>
+                    <div>${unit.size_sqm ?? '-'} m²</div>
+                    <div>${unit.max_adults + unit.max_children} ${config.labels.maxGuests}</div>
+                    <div>${unit.breakfast_included ? config.labels.breakfastIncluded : config.labels.unitOnly}</div>
+                    <div>${unit.view_type ? unit.view_type + ' ' + config.labels.viewSuffix : ''}</div>
                 </dl>
             </div>
         `;
@@ -320,10 +320,10 @@ function initConcierge() {
         if (!uiPayload || !uiPayload.length) return;
 
         uiPayload.forEach((payload) => {
-            if (payload.type === 'room_results') {
-                messagesEl.appendChild(card(payload.rooms.map(roomResultCard)));
-            } else if (payload.type === 'room_detail') {
-                messagesEl.appendChild(card([roomDetailCard(payload.room)]));
+            if (payload.type === 'unit_results') {
+                messagesEl.appendChild(card(payload.units.map(unitResultCard)));
+            } else if (payload.type === 'unit_detail') {
+                messagesEl.appendChild(card([unitDetailCard(payload.unit)]));
             } else if (payload.type === 'availability') {
                 messagesEl.appendChild(card([availabilityCard(payload)]));
             } else if (payload.type === 'booking_confirmation') {
@@ -401,7 +401,7 @@ function initConcierge() {
                 if (newMessages.some((message) => message.role === 'staff')) {
                     setChatStatus(config.labels.statusReplied, 'replied');
                 }
-                window.hotelSound?.play('incoming');
+                window.villaSound?.play('incoming');
                 knownMessageCount = data.messages.length;
                 scrollToBottom();
             }
@@ -467,26 +467,26 @@ function initConcierge() {
         return el;
     }
 
-    const sceneNames = { home: 'reception', lobby: 'reception', info: 'reception', rooms: 'rooms', room: 'room_detail', facilities: 'facilities', facility: 'facility_detail', reservation: 'reservation', staff: 'handover' };
+    const sceneNames = { home: 'reception', lobby: 'reception', info: 'reception', villas: 'units', villa: 'unit_detail', facilities: 'facilities', facility: 'facility_detail', reservation: 'reservation', staff: 'handover' };
 
     /**
      * Where the guest is in the lobby, so the concierge can answer for "this
-     * room" or the reservation on screen. Never includes name or contact data.
+     * unit" or the reservation on screen. Never includes name or contact data.
      */
     function uiContext() {
         const pageScene = document.querySelector('[data-lobby]')?.dataset.scene || 'lobby';
         const context = { scene: sceneNames[pageScene] || 'reception' };
 
         const lastSegment = decodeURIComponent(window.location.pathname.split('/').pop());
-        if (pageScene === 'room') context.selected_room = lastSegment;
+        if (pageScene === 'unit') context.selected_unit = lastSegment;
         if (pageScene === 'facility') context.selected_facility = Number(lastSegment);
 
         if (pageScene === 'reservation') {
             try {
-                const draft = JSON.parse(sessionStorage.getItem(`reservation_draft_${root.dataset.hotelSlug}`) || 'null');
-                const { check_in, check_out, adults, children, rooms, room_type_slug } = draft?.values || {};
-                context.reservation = { check_in, check_out, adults, children, rooms, room_type_slug };
-                if (room_type_slug) context.selected_room = room_type_slug;
+                const draft = JSON.parse(sessionStorage.getItem(`reservation_draft_${root.dataset.villaSlug}`) || 'null');
+                const { check_in, check_out, adults, children, units, unit_type_slug } = draft?.values || {};
+                context.reservation = { check_in, check_out, adults, children, units, unit_type_slug };
+                if (unit_type_slug) context.selected_unit = unit_type_slug;
             } catch { /* no draft to share */ }
         }
 
@@ -496,11 +496,11 @@ function initConcierge() {
     function actionChips(actions) {
         if (!actions || !actions.length) return null;
 
-        const roomUrl = (slug) => config.roomUrlTemplate.replace('__SLUG__', encodeURIComponent(slug));
+        const unitUrl = (slug) => config.unitUrlTemplate.replace('__SLUG__', encodeURIComponent(slug));
         const reservationUrl = (slug) => config.reservationUrlTemplate.replace('__SLUG__', encodeURIComponent(slug));
         const targets = {
-            view_room: [config.labels.viewDetails, (action) => roomUrl(action.room)],
-            reserve: [config.labels.bookNow, (action) => reservationUrl(action.room)],
+            view_unit: [config.labels.viewDetails, (action) => unitUrl(action.unit)],
+            reserve: [config.labels.bookNow, (action) => reservationUrl(action.unit)],
             staff: [config.labels.staff, () => config.staffUrl],
         };
 
@@ -519,9 +519,9 @@ function initConcierge() {
 
                 // Another page: walk there the way the menu does. A panel on
                 // this page is just a hash change, so leave it to the browser.
-                if (link.pathname !== window.location.pathname && window.hotelStage) {
+                if (link.pathname !== window.location.pathname && window.villaStage) {
                     event.preventDefault();
-                    window.hotelStage.leave(link.href);
+                    window.villaStage.leave(link.href);
                 }
             });
             wrap.appendChild(link);
@@ -556,9 +556,9 @@ function initConcierge() {
         staff.addEventListener('click', (event) => {
             closePanel({ confirmDraft: false, restoreFocus: false });
 
-            if (window.hotelStage) {
+            if (window.villaStage) {
                 event.preventDefault();
-                window.hotelStage.leave(staff.href);
+                window.villaStage.leave(staff.href);
             }
         });
 
@@ -575,7 +575,7 @@ function initConcierge() {
 
         openPanel();
         if (!retry) messagesEl.appendChild(bubble('guest', text));
-        window.hotelSound?.play('sent');
+        window.villaSound?.play('sent');
         scrollToBottom();
         setBusy(true);
 
@@ -583,7 +583,7 @@ function initConcierge() {
             const data = await api(config.messageUrl, { guest_token: guestToken, message: text, ...uiContext() });
             renderMessage(data.message);
             setChatStatus(config.labels.statusSent, 'sent');
-            window.hotelSound?.play('incoming');
+            window.villaSound?.play('incoming');
             knownMessageCount += 2; // the guest message just sent + the reply just rendered
             if (data.status === 'handed_over') {
                 showHandedOverBanner();
@@ -651,10 +651,10 @@ function initConcierge() {
 
     document.querySelectorAll('[data-ask-ai-button]').forEach((button) => {
         button.addEventListener('click', () => {
-            const roomCard = button.closest('[data-room-card]');
-            const roomName = roomCard?.dataset.roomName || '';
+            const unitCard = button.closest('[data-unit-card]');
+            const unitName = unitCard?.dataset.unitName || '';
             openPanel();
-            sendMessage(`Tell me more about the ${roomName}`);
+            sendMessage(`Tell me more about the ${unitName}`);
         });
     });
 
@@ -690,10 +690,10 @@ function initConcierge() {
 
 document.addEventListener('DOMContentLoaded', initConcierge);
 
-function initRoomGallery() {
-    document.querySelectorAll('[data-room-gallery]').forEach((gallery) => {
-        const main = gallery.querySelector('[data-room-gallery-main]');
-        const thumbs = [...gallery.querySelectorAll('[data-room-thumb]')];
+function initUnitGallery() {
+    document.querySelectorAll('[data-unit-gallery]').forEach((gallery) => {
+        const main = gallery.querySelector('[data-unit-gallery-main]');
+        const thumbs = [...gallery.querySelectorAll('[data-unit-thumb]')];
         if (!main) return;
 
         thumbs.forEach((thumb) => {
@@ -706,4 +706,4 @@ function initRoomGallery() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', initRoomGallery);
+document.addEventListener('DOMContentLoaded', initUnitGallery);

@@ -56,8 +56,8 @@ function initStage() {
 
         stage.classList.add('is-leaving');
 
-        const chime = window.hotelSound?.isEnabled() ?? false;
-        if (chime) window.hotelSound.play('enter');
+        const chime = window.villaSound?.isEnabled() ?? false;
+        if (chime) window.villaSound.play('enter');
 
         const hold = reducedMotion ? 0 : line ? 820 : chime ? 560 : 320;
         window.setTimeout(() => { window.location.href = href; }, hold);
@@ -83,7 +83,7 @@ function initStage() {
         });
     });
 
-    window.hotelStage = { leave };
+    window.villaStage = { leave };
 }
 
 /** The topic the guest picked on the previous scene, if any (read once). */

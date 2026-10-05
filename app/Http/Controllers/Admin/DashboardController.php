@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Concerns\ResolvesCurrentHotel;
+use App\Http\Controllers\Concerns\ResolvesCurrentVilla;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\HandoverRequest;
@@ -11,24 +11,24 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    use ResolvesCurrentHotel;
+    use ResolvesCurrentVilla;
 
     public function index(Request $request): View
     {
-        $hotel = $this->currentHotel($request);
+        $villa = $this->currentVilla($request);
 
         $stats = [
-            'room_types' => $hotel->roomTypes()->count(),
-            'knowledge_items' => $hotel->knowledgeItems()->count(),
-            'pending_bookings' => $hotel->bookings()->where('status', Booking::STATUS_PENDING)->count(),
-            'open_handovers' => HandoverRequest::whereHas('conversation', fn ($q) => $q->where('hotel_id', $hotel->id))
+            'unit_types' => $villa->unitTypes()->count(),
+            'knowledge_items' => $villa->knowledgeItems()->count(),
+            'pending_bookings' => $villa->bookings()->where('status', Booking::STATUS_PENDING)->count(),
+            'open_handovers' => HandoverRequest::whereHas('conversation', fn ($q) => $q->where('villa_id', $villa->id))
                 ->where('status', HandoverRequest::STATUS_OPEN)
                 ->count(),
         ];
 
-        $recentBookings = $hotel->bookings()->latest()->take(5)->with('roomType')->get();
+        $recentBookings = $villa->bookings()->latest()->take(5)->with('unitType')->get();
 
-        $openHandovers = HandoverRequest::whereHas('conversation', fn ($q) => $q->where('hotel_id', $hotel->id))
+        $openHandovers = HandoverRequest::whereHas('conversation', fn ($q) => $q->where('villa_id', $villa->id))
             ->where('status', HandoverRequest::STATUS_OPEN)
             ->latest()
             ->take(5)
@@ -36,7 +36,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', [
-            'hotel' => $hotel,
+            'villa' => $villa,
             'stats' => $stats,
             'recentBookings' => $recentBookings,
             'openHandovers' => $openHandovers,

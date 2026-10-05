@@ -2,72 +2,72 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Concerns\ResolvesCurrentHotel;
+use App\Http\Controllers\Concerns\ResolvesCurrentVilla;
 use App\Http\Controllers\Controller;
-use App\Models\HotelKnowledgeItem;
+use App\Models\VillaKnowledgeItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class KnowledgeItemController extends Controller
 {
-    use ResolvesCurrentHotel;
+    use ResolvesCurrentVilla;
 
     public function index(Request $request): View
     {
-        $hotel = $this->currentHotel($request);
+        $villa = $this->currentVilla($request);
 
-        $items = $hotel->knowledgeItems()->orderBy('category')->orderBy('sort_order')->get();
+        $items = $villa->knowledgeItems()->orderBy('category')->orderBy('sort_order')->get();
 
-        return view('admin.knowledge-items.index', compact('hotel', 'items'));
+        return view('admin.knowledge-items.index', compact('villa', 'items'));
     }
 
     public function create(Request $request): View
     {
-        $hotel = $this->currentHotel($request);
+        $villa = $this->currentVilla($request);
 
         return view('admin.knowledge-items.form', [
-            'hotel' => $hotel,
-            'item' => new HotelKnowledgeItem(['category' => HotelKnowledgeItem::CATEGORY_GENERAL, 'is_active' => true]),
+            'villa' => $villa,
+            'item' => new VillaKnowledgeItem(['category' => VillaKnowledgeItem::CATEGORY_GENERAL, 'is_active' => true]),
             'categories' => $this->categories(),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $hotel = $this->currentHotel($request);
+        $villa = $this->currentVilla($request);
 
-        $item = $hotel->knowledgeItems()->create($this->validated($request));
+        $item = $villa->knowledgeItems()->create($this->validated($request));
 
         return redirect()->route('admin.knowledge-items.index')->with('status', "Knowledge item \"{$item->title}\" created.");
     }
 
-    public function edit(Request $request, HotelKnowledgeItem $knowledgeItem): View
+    public function edit(Request $request, VillaKnowledgeItem $knowledgeItem): View
     {
-        $hotel = $this->currentHotel($request);
-        abort_if($knowledgeItem->hotel_id !== $hotel->id, 404);
+        $villa = $this->currentVilla($request);
+        abort_if($knowledgeItem->villa_id !== $villa->id, 404);
 
         return view('admin.knowledge-items.form', [
-            'hotel' => $hotel,
+            'villa' => $villa,
             'item' => $knowledgeItem,
             'categories' => $this->categories(),
         ]);
     }
 
-    public function update(Request $request, HotelKnowledgeItem $knowledgeItem): RedirectResponse
+    public function update(Request $request, VillaKnowledgeItem $knowledgeItem): RedirectResponse
     {
-        $hotel = $this->currentHotel($request);
-        abort_if($knowledgeItem->hotel_id !== $hotel->id, 404);
+        $villa = $this->currentVilla($request);
+        abort_if($knowledgeItem->villa_id !== $villa->id, 404);
 
         $knowledgeItem->update($this->validated($request));
 
         return redirect()->route('admin.knowledge-items.index')->with('status', "Knowledge item \"{$knowledgeItem->title}\" updated.");
     }
 
-    public function destroy(Request $request, HotelKnowledgeItem $knowledgeItem): RedirectResponse
+    public function destroy(Request $request, VillaKnowledgeItem $knowledgeItem): RedirectResponse
     {
-        $hotel = $this->currentHotel($request);
-        abort_if($knowledgeItem->hotel_id !== $hotel->id, 404);
+        $villa = $this->currentVilla($request);
+        abort_if($knowledgeItem->villa_id !== $villa->id, 404);
 
         $knowledgeItem->delete();
 
@@ -108,12 +108,12 @@ class KnowledgeItemController extends Controller
     private function categories(): array
     {
         return [
-            HotelKnowledgeItem::CATEGORY_GENERAL,
-            HotelKnowledgeItem::CATEGORY_FACILITIES,
-            HotelKnowledgeItem::CATEGORY_POLICIES,
-            HotelKnowledgeItem::CATEGORY_DINING,
-            HotelKnowledgeItem::CATEGORY_TRANSPORT,
-            HotelKnowledgeItem::CATEGORY_FAQ,
+            VillaKnowledgeItem::CATEGORY_GENERAL,
+            VillaKnowledgeItem::CATEGORY_FACILITIES,
+            VillaKnowledgeItem::CATEGORY_POLICIES,
+            VillaKnowledgeItem::CATEGORY_DINING,
+            VillaKnowledgeItem::CATEGORY_TRANSPORT,
+            VillaKnowledgeItem::CATEGORY_FAQ,
         ];
     }
 }
