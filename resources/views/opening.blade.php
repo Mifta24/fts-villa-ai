@@ -8,17 +8,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="stage-page antialiased">
-    <main class="stage">
+    <main class="stage stage-opening">
         <div class="stage-loader" data-stage-loader role="status"><span class="villa-monogram" aria-hidden="true">F</span><p>{{ $opening['loading'] }}</p></div>
-        <img src="{{ asset('images/concierge-lobby.webp') }}" alt="" class="stage-image" fetchpriority="high">
+        <img src="{{ $openingImage }}" alt="" class="stage-image" fetchpriority="high">
         <div class="stage-shade"></div>
 
-        <header class="stage-header">
-            <span class="flex min-w-0 items-center gap-3">
+        <header class="opening-top">
+            <span class="rail-brand">
                 <span class="villa-monogram" aria-hidden="true">F</span>
-                <span class="block truncate font-semibold tracking-tight">FTS Villa AI</span>
+                <span class="rail-brand-name">FTS Villa AI</span>
             </span>
-            <div class="stage-tools">
+            <div class="rail-tools">
                 <x-sound-toggle :on="$opening['sound_on']" :off="$opening['sound_off']" />
                 <nav aria-label="Language" class="stage-lang">
                     @foreach ($supportedLocales as $code)

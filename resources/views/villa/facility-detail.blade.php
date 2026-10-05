@@ -1,4 +1,4 @@
-<x-villa-stage :villa="$villa" :locale="$locale" :supported-locales="$supportedLocales" :labels="$labels" :lobby="$lobby" :narration="$narration" :scene="$scene" :backdrop="$backdrop" :menu-items="$menuItems" :menu="false" :title="$facility->translatedTitle($locale).' · '.$villa->name">
+<x-villa-stage :villa="$villa" :locale="$locale" :supported-locales="$supportedLocales" :labels="$labels" :lobby="$lobby" :narration="$narration" :scene="$scene" :backdrop="$backdrop" :menu-items="$menuItems" :title="$facility->translatedTitle($locale).' · '.$villa->name">
     @php
         $title = $facility->translatedTitle($locale);
         $facilityUrl = fn ($item) => route('villa.facility', ['villaSlug' => $villa->slug, 'facilityId' => $item->id, 'lang' => $locale]);

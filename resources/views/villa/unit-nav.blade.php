@@ -1,5 +1,5 @@
-{{-- On the units scenes the menu card becomes the unit index, so the guest can step between units without going back. --}}
-<aside class="stage-menu" aria-label="{{ $labels['units_heading'] }}">
+{{-- On the units scenes the rail holds the villa index, so the guest can step between villas without going back. --}}
+<div class="stage-menu" role="region" aria-label="{{ $labels['units_heading'] }}">
     <a href="{{ route('villa.show', ['villaSlug' => $villa->slug, 'lang' => $locale]) }}" data-stage-exit data-tour-line="{{ $narration['tour_lobby'] }}" class="stage-menu-back"><span aria-hidden="true">‹</span> {{ $lobby['explore'] }}</a>
     <p class="lobby-eyebrow">{{ $labels['units_heading'] }}</p>
     <nav class="unit-nav">
@@ -17,5 +17,4 @@
             </a>
         @endforeach
     </nav>
-    <span class="stage-menu-footer">{{ $lobby['available'] }} · POWERED BY FTS</span>
-</aside>
+</div>

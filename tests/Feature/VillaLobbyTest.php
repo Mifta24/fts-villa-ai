@@ -101,11 +101,11 @@ class VillaLobbyTest extends TestCase
             ->assertSee('Garden pool')
             ->assertDontSee('Hidden spa')
             ->assertDontSee('Other pool')
-            // photo cards replace the menu card, which would cover the right-hand panel
+            // the facilities open as a page beside the rail, which keeps the main menu in reach
             ->assertSee('class="facility-card"', false)
             ->assertSee('https://example.test/pool.jpg', false)
             ->assertSee('class="lobby-content stage-panel-right', false)
-            ->assertDontSee('class="lobby-navigation"', false);
+            ->assertSee('class="lobby-navigation"', false);
         $this->get('/demo?lang=en')->assertOk()->assertSee('Welcome to your')->assertSee('virtual lobby');
         $this->get('/demo?lang=ja')->assertOk()->assertSee('バーチャルロビー');
     }
@@ -251,27 +251,22 @@ class VillaLobbyTest extends TestCase
         $this->get('/draft/reservation')->assertNotFound();
     }
 
-    public function test_staff_scene_docks_chat_away_from_the_contact_panel(): void
+    public function test_staff_and_information_open_as_pages_beside_the_rail(): void
     {
         Villa::create(['name' => 'Demo', 'slug' => 'demo', 'public_status' => 'published']);
 
         $this->get('/demo/staff?lang=en')
             ->assertOk()
-            ->assertSee('data-chat-dock="left"', false)
+            ->assertSee('class="stage-rail"', false)
             ->assertSee('class="lobby-content staff-panel', false);
-    }
-
-    public function test_information_scene_centers_the_chat_dock(): void
-    {
-        Villa::create(['name' => 'Demo', 'slug' => 'demo', 'public_status' => 'published']);
 
         $this->get('/demo/info?lang=en')
             ->assertOk()
-            ->assertSee('data-chat-dock="center"', false)
+            ->assertSee('class="stage-rail"', false)
             ->assertSee('class="lobby-content info-panel', false);
     }
 
-    public function test_every_stage_scene_uses_the_same_chat_controls_and_dock_contract(): void
+    public function test_every_stage_scene_uses_the_same_rail_and_chat_controls(): void
     {
         $villa = Villa::create(['name' => 'Demo', 'slug' => 'demo', 'public_status' => 'published']);
         $villa->unitTypes()->create(['name' => 'Deluxe King', 'slug' => 'deluxe-king', 'base_price' => 950000, 'max_adults' => 2, 'max_children' => 0, 'is_active' => true]);
@@ -280,7 +275,7 @@ class VillaLobbyTest extends TestCase
         foreach (['/demo', '/demo/info', '/demo/units', '/demo/facilities', '/demo/reservation', '/demo/staff'] as $path) {
             $this->get($path.'?lang=en')
                 ->assertOk()
-                ->assertSee('data-chat-dock="', false)
+                ->assertSee('class="stage-rail"', false)
                 ->assertSee('data-chat-launcher', false)
                 ->assertSee('data-chat-composer', false)
                 ->assertSee('aria-controls="concierge-chat-log"', false);
@@ -460,7 +455,7 @@ class VillaLobbyTest extends TestCase
 
         // the open unit is marked as current in the index, the others are not
         $index = $this->get('/demo/units/family-suite?lang=id')->getContent();
-        $navigation = Str::between($index, '<nav class="unit-nav">', '</nav>');
+        $navigation = Str::betweenFirst($index, '<nav class="unit-nav">', '</nav>');
         $this->assertStringContainsString('aria-current="page"', Str::after($navigation, 'unitSlug=family-suite') ?: $navigation);
         $this->assertSame(1, substr_count($navigation, 'aria-current'));
 
@@ -471,43 +466,27 @@ class VillaLobbyTest extends TestCase
             ->assertDontSee('class="unit-nav"', false);
     }
 
-    public function test_a_scene_layers_a_cut_out_concierge_when_a_plain_background_is_supplied(): void
+    public function test_scenes_open_onto_villa_photos_with_the_concierge_only_as_an_avatar(): void
     {
         $villa = Villa::create(['name' => 'Demo', 'slug' => 'demo', 'public_status' => 'published', 'currency' => 'IDR']);
         $villa->unitTypes()->create(['name' => 'Deluxe King', 'slug' => 'deluxe-king', 'base_price' => 950000, 'max_adults' => 2, 'max_children' => 0, 'is_active' => true]);
 
-        $pixel = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
-        $character = public_path('images/character.png');
-        $background = public_path('images/units-bg.png');
+        $this->get('/demo/units')
+            ->assertOk()
+            ->assertSee('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4', false)
+            ->assertSee('images/character/character greeting.webp', false)
+            ->assertDontSee('class="stage-character"', false);
 
-        try {
-            // Only the cut-out: the scene keeps the artwork that already has her in it.
-            file_put_contents($character, $pixel);
+        // Without a cover photo the lobby falls back to the default villa photo.
+        $this->get('/demo')
+            ->assertOk()
+            ->assertSee('https://images.unsplash.com/photo-1582610116397-edb318620f90', false)
+            ->assertDontSee('class="stage-character"', false);
 
-            $this->get('/demo/units')
-                ->assertOk()
-                ->assertSee('images/suite.png', false)
-                ->assertDontSee('class="stage-character"', false);
+        $villa->update(['cover_path' => 'https://example.test/our-villa.jpg']);
 
-            // Cut-out plus a plain background: she is layered in front instead.
-            file_put_contents($background, $pixel);
-
-            $this->get('/demo/units')
-                ->assertOk()
-                ->assertSee('class="stage-character"', false)
-                ->assertSee('images/units-bg.png', false)
-                ->assertSee('images/character.png', false)
-                ->assertDontSee('images/suite.png', false);
-
-            // The lobby has no plain background of its own, so it is unaffected.
-            $this->get('/demo')
-                ->assertOk()
-                ->assertSee('images/concierge-lobby.png', false)
-                ->assertDontSee('class="stage-character"', false);
-        } finally {
-            @unlink($character);
-            @unlink($background);
-        }
+        $this->get('/demo')->assertOk()->assertSee('https://example.test/our-villa.jpg', false);
+        $this->get('/')->assertOk()->assertSee('https://example.test/our-villa.jpg', false);
     }
 
     public function test_facility_icons_follow_what_the_entry_is_about(): void

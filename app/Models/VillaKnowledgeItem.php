@@ -65,7 +65,7 @@ class VillaKnowledgeItem extends Model
             'parking' => ['parking', 'parkir', 'car'],
             'dining' => ['breakfast', 'sarapan', 'restaurant', 'restoran', 'dining', 'makan'],
             'transport' => ['airport', 'bandara', 'transfer', 'shuttle', 'antar-jemput'],
-            'place' => ['nearby', 'terdekat', 'attraction', 'atraksi', 'beach', 'pantai'],
+            'place' => ['nearby', 'terdekat', 'attraction', 'atraksi', 'curug', 'waterfall', 'safari', 'kebun raya'],
             'wifi' => ['wifi', 'wi-fi', 'internet'],
         ] as $icon => $needles) {
             foreach ($needles as $needle) {

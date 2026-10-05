@@ -59,7 +59,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-stone-700">View type</label>
-                    <input type="text" name="view_type" value="{{ old('view_type', $unitType->view_type) }}" placeholder="ocean, garden, pool…" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
+                    <input type="text" name="view_type" value="{{ old('view_type', $unitType->view_type) }}" placeholder="mountain, garden, pool…" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-stone-700">Bed 1 type</label>

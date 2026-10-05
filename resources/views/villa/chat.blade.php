@@ -93,6 +93,7 @@
             </div>
 
             <button type="button" data-chat-launcher class="chat-launcher" aria-controls="concierge-chat-log" aria-expanded="false">
+                <span class="chat-host-avatar" aria-hidden="true"></span>
                 <span class="chat-launcher-dot" aria-hidden="true"></span>
                 <span>{{ $labels['chat_open'] }}</span>
                 <span class="chat-launcher-arrow" aria-hidden="true">↗</span>

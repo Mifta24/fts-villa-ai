@@ -9,7 +9,7 @@
         'faq' => ['tab' => $lobby['info_tab_faq'], 'heading' => $lobby['info_faq']],
     ])->filter(fn ($section, $category) => ($infoItems[$category] ?? collect())->isNotEmpty());
 @endphp
-<x-villa-stage :villa="$villa" :locale="$locale" :supported-locales="$supportedLocales" :labels="$labels" :lobby="$lobby" :narration="$narration" :scene="$scene" :backdrop="$backdrop" :menu-items="$menuItems" :menu="false" :title="$lobby['menu_info'].' · '.$villa->name">
+<x-villa-stage :villa="$villa" :locale="$locale" :supported-locales="$supportedLocales" :labels="$labels" :lobby="$lobby" :narration="$narration" :scene="$scene" :backdrop="$backdrop" :menu-items="$menuItems" :title="$lobby['menu_info'].' · '.$villa->name">
     <div class="stage-panels">
         <section class="lobby-content info-panel @container" aria-label="{{ $lobby['menu_info'] }}">
             <a href="{{ route('villa.show', ['villaSlug' => $villa->slug, 'lang' => $locale]) }}" data-stage-exit data-tour-line="{{ $narration['tour_lobby'] }}" class="panel-close" aria-label="{{ $lobby['back'] }}"><span aria-hidden="true">×</span></a>

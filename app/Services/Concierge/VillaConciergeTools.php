@@ -4,9 +4,9 @@ namespace App\Services\Concierge;
 
 use App\Models\Conversation;
 use App\Models\HandoverRequest;
+use App\Models\UnitType;
 use App\Models\Villa;
 use App\Models\VillaKnowledgeItem;
-use App\Models\UnitType;
 use App\Services\Reservation\ReservationService;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
@@ -60,7 +60,7 @@ class VillaConciergeTools
                             'check_out' => ['type' => 'string', 'description' => 'Check-out date, YYYY-MM-DD'],
                             'adults' => ['type' => 'integer', 'minimum' => 1],
                             'children' => ['type' => 'integer', 'minimum' => 0],
-                            'view_type' => ['type' => 'string', 'description' => 'e.g. ocean, garden, pool — optional preference'],
+                            'view_type' => ['type' => 'string', 'description' => 'e.g. mountain, garden, pool — optional preference'],
                         ],
                         'required' => ['check_in', 'check_out', 'adults'],
                     ],

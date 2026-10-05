@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UnitType;
 use App\Models\Villa;
 use App\Models\VillaKnowledgeItem;
-use App\Models\UnitType;
 use App\Services\Reservation\ReservationHandover;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -15,8 +15,18 @@ class VillaPageController extends Controller
 {
     private const SUPPORTED_LOCALES = ['id', 'en', 'ja'];
 
-    /** The default cut-out of the concierge, layered in front of a scene's background when a scene does not name its own. */
-    private const CHARACTER_IMAGE = 'images/character.png';
+    /** The concierge cut-out her chat and narrator avatars are cropped from. */
+    private const AVATAR_IMAGE = 'images/character/character greeting.webp';
+
+    /** Villa photography behind each scene, so every page opens onto the property itself. */
+    private const SCENE_PHOTOS = [
+        'lobby' => 'https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=2000&q=80',
+        'units' => 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=2000&q=80',
+        'facilities' => 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=2000&q=80',
+        'info' => 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?auto=format&fit=crop&w=2000&q=80',
+        'staff' => 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=2000&q=80',
+        'reservation' => 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=2000&q=80',
+    ];
 
     public function __construct(private readonly ReservationHandover $handover) {}
 
@@ -101,17 +111,17 @@ class VillaPageController extends Controller
         'en' => [
             'bed' => ['king' => 'King bed', 'queen' => 'Queen bed', 'twin' => 'Twin bed', 'single' => 'Single bed', 'double' => 'Double bed'],
             'view' => ['garden' => 'Garden view', 'ocean' => 'Ocean view', 'pool' => 'Pool view', 'city' => 'City view', 'mountain' => 'Mountain view'],
-            'amenity' => ['air_conditioning' => 'Air conditioning', 'wifi' => 'Wi-Fi', 'minibar' => 'Minibar', 'safe_deposit_box' => 'Safe deposit box', 'balcony' => 'Balcony', 'bathtub' => 'Bathtub', 'coffee_maker' => 'Coffee maker', 'living_room' => 'Living room', 'private_pool' => 'Private pool', 'kitchen' => 'Kitchen', 'outdoor_shower' => 'Outdoor shower', 'gazebo' => 'Gazebo', 'butler_service' => 'Butler service'],
+            'amenity' => ['air_conditioning' => 'Air conditioning', 'wifi' => 'Wi-Fi', 'minibar' => 'Minibar', 'safe_deposit_box' => 'Safe deposit box', 'balcony' => 'Balcony', 'bathtub' => 'Bathtub', 'coffee_maker' => 'Coffee maker', 'living_room' => 'Living room', 'private_pool' => 'Private pool', 'kitchen' => 'Kitchen', 'outdoor_shower' => 'Outdoor shower', 'gazebo' => 'Gazebo', 'butler_service' => 'Butler service', 'fireplace' => 'Fireplace', 'bbq_area' => 'BBQ area', 'water_heater' => 'Hot water'],
         ],
         'id' => [
             'bed' => ['king' => 'Tempat tidur king', 'queen' => 'Tempat tidur queen', 'twin' => 'Tempat tidur twin', 'single' => 'Tempat tidur single', 'double' => 'Tempat tidur double'],
             'view' => ['garden' => 'Pemandangan taman', 'ocean' => 'Pemandangan laut', 'pool' => 'Pemandangan kolam', 'city' => 'Pemandangan kota', 'mountain' => 'Pemandangan gunung'],
-            'amenity' => ['air_conditioning' => 'AC', 'wifi' => 'Wi-Fi', 'minibar' => 'Minibar', 'safe_deposit_box' => 'Brankas', 'balcony' => 'Balkon', 'bathtub' => 'Bak mandi', 'coffee_maker' => 'Mesin kopi', 'living_room' => 'Ruang tamu', 'private_pool' => 'Kolam renang pribadi', 'kitchen' => 'Dapur', 'outdoor_shower' => 'Shower terbuka', 'gazebo' => 'Gazebo', 'butler_service' => 'Layanan butler'],
+            'amenity' => ['air_conditioning' => 'AC', 'wifi' => 'Wi-Fi', 'minibar' => 'Minibar', 'safe_deposit_box' => 'Brankas', 'balcony' => 'Balkon', 'bathtub' => 'Bak mandi', 'coffee_maker' => 'Mesin kopi', 'living_room' => 'Ruang tamu', 'private_pool' => 'Kolam renang pribadi', 'kitchen' => 'Dapur', 'outdoor_shower' => 'Shower terbuka', 'gazebo' => 'Gazebo', 'butler_service' => 'Layanan butler', 'fireplace' => 'Perapian', 'bbq_area' => 'Area BBQ', 'water_heater' => 'Pemanas air'],
         ],
         'ja' => [
             'bed' => ['king' => 'キングベッド', 'queen' => 'クイーンベッド', 'twin' => 'ツインベッド', 'single' => 'シングルベッド', 'double' => 'ダブルベッド'],
             'view' => ['garden' => 'ガーデンビュー', 'ocean' => 'オーシャンビュー', 'pool' => 'プールビュー', 'city' => 'シティビュー', 'mountain' => 'マウンテンビュー'],
-            'amenity' => ['air_conditioning' => 'エアコン', 'wifi' => 'Wi-Fi', 'minibar' => 'ミニバー', 'safe_deposit_box' => 'セーフティボックス', 'balcony' => 'バルコニー', 'bathtub' => 'バスタブ', 'coffee_maker' => 'コーヒーメーカー', 'living_room' => 'リビングルーム', 'private_pool' => 'プライベートプール', 'kitchen' => 'キッチン', 'outdoor_shower' => '屋外シャワー', 'gazebo' => 'ガゼボ', 'butler_service' => 'バトラーサービス'],
+            'amenity' => ['air_conditioning' => 'エアコン', 'wifi' => 'Wi-Fi', 'minibar' => 'ミニバー', 'safe_deposit_box' => 'セーフティボックス', 'balcony' => 'バルコニー', 'bathtub' => 'バスタブ', 'coffee_maker' => 'コーヒーメーカー', 'living_room' => 'リビングルーム', 'private_pool' => 'プライベートプール', 'kitchen' => 'キッチン', 'outdoor_shower' => '屋外シャワー', 'gazebo' => 'ガゼボ', 'butler_service' => 'バトラーサービス', 'fireplace' => '暖炉', 'bbq_area' => 'BBQエリア', 'water_heater' => '給湯設備'],
         ],
     ];
 
@@ -128,6 +138,7 @@ class VillaPageController extends Controller
             'locale' => $locale,
             'supportedLocales' => self::SUPPORTED_LOCALES,
             'opening' => $this->openingLabels($locale),
+            'openingImage' => $villas->isNotEmpty() ? $this->sceneBackdrop($villas->first(), 'lobby')['image'] : self::SCENE_PHOTOS['lobby'],
         ]);
     }
 
@@ -257,7 +268,7 @@ class VillaPageController extends Controller
             'unitTypes' => $unitTypes,
             'locale' => $locale,
             'scene' => $scene,
-            'backdrop' => $this->sceneBackdrop($scene),
+            'backdrop' => $this->sceneBackdrop($villa, $scene),
             'menuItems' => $this->stageMenu($villa, $locale, $labels, $lobby),
             'supportedLocales' => self::SUPPORTED_LOCALES,
             'labels' => $labels,
@@ -277,114 +288,42 @@ class VillaPageController extends Controller
     }
 
     /**
-     * Artwork for a scene. A villa can supply either a single picture with
-     * the concierge already in it, or — preferred — a plain background plus
-     * one cut-out of her (transparent PNG/WebP) that is layered in front, so
-     * she can be placed clear of the panels and reused across scenes.
+     * The photo behind a scene. The lobby opens onto the villa's own cover
+     * photo when it has one; every other scene uses fixed villa photography.
+     * The concierge is no longer drawn into the scene — she appears only as
+     * the avatar beside her chat and narration.
      *
-     * @return array{image: string, focus: string, focusMobile: string, character: ?string, anchor: string, text: string, avatarImage: string, avatarZoom: string, avatarFocus: string}
+     * @return array{image: string, focus: string, focusMobile: string, character: null, anchor: string, text: string, avatarImage: string, avatarZoom: string, avatarFocus: string}
      */
-    private function sceneBackdrop(string $scene): array
+    private function sceneBackdrop(Villa $villa, string $scene): array
     {
-        $scenes = [
-            'units' => [
-                'combined' => 'images/suite.webp',
-                'background' => 'images/units-bg.png',
-                'focus' => 'center 26%',
-                'focusMobile' => '50% 14%',
-                'anchor' => 'right',
-                'text' => 'top',
-                'avatarZoom' => '500%',
-                'avatarFocus' => '52% 10%',
-            ],
-            'facilities' => [
-                'combined' => 'images/facility.webp',
-                'background' => 'images/facilities-bg.png',
-                'focus' => 'center 30%',
-                'focusMobile' => '24% 18%',
-                // She stands on the left of this artwork, so the scene text
-                // sits low and leaves her face clear.
-                'anchor' => 'left',
-                'text' => 'bottom',
-                'avatarZoom' => '500%',
-                'avatarFocus' => '17% 11%',
-            ],
-            'info' => [
-                // A plain terrace backdrop with her greeting cut-out layered
-                // in front, standing clear on the right of the panel.
-                'combined' => 'images/information.webp',
-                'background' => 'images/information.webp',
-                'character' => 'images/character/character greeting.webp',
-                'focus' => 'center 38%',
-                'focusMobile' => '70% 30%',
-                'anchor' => 'right',
-                'text' => 'bottom',
-                'avatarZoom' => '300%',
-                'avatarFocus' => '50% 25%',
-            ],
-            'staff' => [
-                // A reception lounge backdrop with her grateful cut-out
-                // centred, so the panel floats low and leaves her clear.
-                'combined' => 'images/talk to staff.webp',
-                'background' => 'images/talk to staff.webp',
-                'character' => 'images/character/character grateful.webp',
-                'focus' => 'center 30%',
-                'focusMobile' => '62% 20%',
-                'anchor' => 'center',
-                'text' => 'top',
-                'avatarZoom' => '260%',
-                'avatarFocus' => '50% 12%',
-            ],
-            'reservation' => [
-                // She stands on the left holding a tablet with a booking
-                // form, echoing the wizard panel that sits beside her.
-                'combined' => 'images/reservation.webp',
-                'background' => 'images/reservation.webp',
-                'character' => 'images/character/character reservation.webp',
-                'focus' => 'center 30%',
-                'focusMobile' => '24% 18%',
-                'anchor' => 'left',
-                'text' => 'bottom',
-                'avatarZoom' => '300%',
-                'avatarFocus' => '42% 14%',
-            ],
-            'lobby' => [
-                'combined' => 'images/concierge-lobby.webp',
-                'background' => 'images/lobby-bg.png',
-                'focus' => 'center 22%',
-                'focusMobile' => '50% 15%',
-                'anchor' => 'center',
-                'text' => 'top',
-                'avatarZoom' => '315%',
-                'avatarFocus' => '51% 19%',
-            ],
-        ];
+        $scene = ['unit' => 'units', 'facility' => 'facilities'][$scene] ?? $scene;
+        $scene = array_key_exists($scene, self::SCENE_PHOTOS) ? $scene : 'lobby';
 
-        $artwork = $scenes[['unit' => 'units', 'facility' => 'facilities'][$scene] ?? $scene] ?? $scenes['lobby'];
+        $layout = [
+            'lobby' => ['focus' => 'center 60%', 'focusMobile' => '30% 50%', 'text' => 'top'],
+            'units' => ['focus' => 'center 55%', 'focusMobile' => '50% 50%', 'text' => 'top'],
+            'facilities' => ['focus' => 'center 50%', 'focusMobile' => '40% 50%', 'text' => 'bottom'],
+            'info' => ['focus' => 'center 50%', 'focusMobile' => '60% 50%', 'text' => 'bottom'],
+            'staff' => ['focus' => 'center 50%', 'focusMobile' => '50% 50%', 'text' => 'top'],
+            'reservation' => ['focus' => 'center 45%', 'focusMobile' => '50% 50%', 'text' => 'bottom'],
+        ][$scene];
 
-        $characterImage = $artwork['character'] ?? self::CHARACTER_IMAGE;
-        $character = file_exists(public_path($characterImage)) ? $characterImage : null;
-        $background = $character && file_exists(public_path($artwork['background'])) ? $artwork['background'] : null;
-
-        if ($background === null) {
-            // No separate background for this scene, so use the picture that
-            // already has her in it — and do not layer her on top of herself.
-            $character = null;
-            $background = file_exists(public_path($artwork['combined'])) ? $artwork['combined'] : $scenes['lobby']['combined'];
-        }
+        $cover = $villa->cover_path;
+        $photo = $scene === 'lobby' && $cover && Str::startsWith($cover, ['https://', 'http://'])
+            ? $cover
+            : self::SCENE_PHOTOS[$scene];
 
         return [
-            'image' => asset($background),
-            'focus' => $artwork['focus'],
-            'focusMobile' => $artwork['focusMobile'],
-            'character' => $character ? asset($character) : null,
-            'anchor' => $artwork['anchor'],
-            'text' => $artwork['text'],
-            // The avatars crop her face out of whichever picture holds her —
-            // the cut-out when one is layered in, otherwise the background.
-            'avatarImage' => asset($character ?? $background),
-            'avatarZoom' => $artwork['avatarZoom'],
-            'avatarFocus' => $artwork['avatarFocus'],
+            'image' => $photo,
+            'focus' => $layout['focus'],
+            'focusMobile' => $layout['focusMobile'],
+            'character' => null,
+            'anchor' => 'center',
+            'text' => $layout['text'],
+            'avatarImage' => asset(self::AVATAR_IMAGE),
+            'avatarZoom' => '300%',
+            'avatarFocus' => '50% 25%',
         ];
     }
 

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Villa;
-use App\Models\VillaKnowledgeItem;
 use App\Models\UnitInventory;
 use App\Models\UnitType;
 use App\Models\User;
+use App\Models\Villa;
+use App\Models\VillaKnowledgeItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,39 +23,37 @@ class DemoVillaSeeder extends Seeder
             ]
         );
 
-        $villa = Villa::firstOrCreate(
-            ['name' => 'FTS Villa AI'],
-            [
-                'slug' => Villa::generateUniqueSlug('FTS Villa AI'),
-                'description' => 'Kompleks villa privat tepi pantai di Nusa Dua, Bali. Setiap villa punya kolam renang pribadi, dengan akses jalan kaki langsung ke pantai.',
-                'translations' => [
-                    'id' => [
-                        'description' => 'Kompleks villa privat tepi pantai di Nusa Dua, Bali. Setiap villa punya kolam renang pribadi, dengan akses jalan kaki langsung ke pantai.',
-                    ],
-                    'en' => [
-                        'description' => 'A beachfront collection of private villas in Nusa Dua, Bali. Every villa has its own pool, with direct walking access to the beach.',
-                    ],
-                    'ja' => [
-                        'description' => 'バリ島ヌサドゥアのビーチフロントに佇むプライベートヴィラリゾート。全ヴィラにプライベートプールを備え、ビーチへ徒歩でアクセスできます。',
-                    ],
+        $villa = Villa::firstOrNew(['name' => 'FTS Villa AI']);
+        $villa->fill([
+            'slug' => $villa->slug ?? Villa::generateUniqueSlug('FTS Villa AI'),
+            'description' => 'Kompleks villa privat di kawasan Puncak, Bogor, dikelilingi kebun teh dan udara pegunungan yang sejuk, dengan pemandangan Gunung Gede-Pangrango.',
+            'translations' => [
+                'id' => [
+                    'description' => 'Kompleks villa privat di kawasan Puncak, Bogor, dikelilingi kebun teh dan udara pegunungan yang sejuk, dengan pemandangan Gunung Gede-Pangrango.',
                 ],
-                'address' => 'Jl. Pantai Mengiat No. 8, Nusa Dua',
-                'city' => 'Bali',
-                'country' => 'Indonesia',
-                'latitude' => -8.8008,
-                'longitude' => 115.2317,
-                'phone' => '+62 361 771234',
-                'whatsapp' => '6281234567890',
-                'email' => 'reservation@ftsvilla.test',
-                'timezone' => 'Asia/Makassar',
-                'currency' => 'IDR',
-                'default_locale' => 'id',
-                'check_in_time' => '14:00',
-                'check_out_time' => '12:00',
-                'cover_path' => 'https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=1920&q=80',
-                'public_status' => 'published',
-            ]
-        );
+                'en' => [
+                    'description' => 'A collection of private villas in the Puncak highlands of Bogor, surrounded by tea plantations and cool mountain air, with views of Mount Gede-Pangrango.',
+                ],
+                'ja' => [
+                    'description' => 'ボゴールのプンチャック高原に佇むプライベートヴィラリゾート。茶畑と涼しい山の空気に囲まれ、ゲデ・パンランゴ山を望みます。',
+                ],
+            ],
+            'address' => 'Jl. Raya Puncak KM 82, Tugu Utara, Cisarua',
+            'city' => 'Bogor',
+            'country' => 'Indonesia',
+            'latitude' => -6.6957,
+            'longitude' => 106.9690,
+            'phone' => '+62 251 8254321',
+            'whatsapp' => '6281234567890',
+            'email' => 'reservation@ftsvilla.test',
+            'timezone' => 'Asia/Jakarta',
+            'currency' => 'IDR',
+            'default_locale' => 'id',
+            'check_in_time' => '14:00',
+            'check_out_time' => '12:00',
+            'cover_path' => 'https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=1920&q=80',
+            'public_status' => 'published',
+        ])->save();
 
         $villa->users()->syncWithoutDetaching([
             $owner->id => ['role' => 'owner', 'status' => 'active'],
@@ -100,11 +98,11 @@ class DemoVillaSeeder extends Seeder
             [
                 'slug' => 'one-bedroom-garden-pool-villa',
                 'name' => 'One Bedroom Garden Pool Villa',
-                'description' => 'Villa satu kamar tidur dengan kolam renang pribadi dan taman tropis yang tenang, cocok untuk pasangan atau keluarga kecil.',
+                'description' => 'Villa satu kamar tidur dengan kolam renang air hangat pribadi dan taman yang asri, cocok untuk pasangan atau keluarga kecil.',
                 'translations' => [
-                    'id' => ['name' => 'One Bedroom Garden Pool Villa', 'description' => 'Villa satu kamar tidur dengan kolam renang pribadi dan taman tropis yang tenang, cocok untuk pasangan atau keluarga kecil.'],
-                    'en' => ['name' => 'One Bedroom Garden Pool Villa', 'description' => 'A one-bedroom villa with its own private pool and a quiet tropical garden, ideal for couples or small families.'],
-                    'ja' => ['name' => 'ワンベッドルーム ガーデンプールヴィラ', 'description' => 'プライベートプールと静かな熱帯庭園を備えたワンベッドルームのヴィラで、カップルや小さなご家族に最適です。'],
+                    'id' => ['name' => 'One Bedroom Garden Pool Villa', 'description' => 'Villa satu kamar tidur dengan kolam renang air hangat pribadi dan taman yang asri, cocok untuk pasangan atau keluarga kecil.'],
+                    'en' => ['name' => 'One Bedroom Garden Pool Villa', 'description' => 'A one-bedroom villa with its own heated private pool and a leafy garden, ideal for couples or small families.'],
+                    'ja' => ['name' => 'ワンベッドルーム ガーデンプールヴィラ', 'description' => '温水のプライベートプールと緑豊かな庭を備えたワンベッドルームのヴィラで、カップルや小さなご家族に最適です。'],
                 ],
                 'size_sqm' => 120,
                 'max_adults' => 2,
@@ -113,50 +111,50 @@ class DemoVillaSeeder extends Seeder
                 'view_type' => 'garden',
                 'breakfast_included' => true,
                 'extra_bed_available' => true,
-                'extra_bed_price' => 350000,
-                'base_price' => 2500000,
-                'amenities' => ['private_pool', 'air_conditioning', 'wifi', 'minibar', 'safe_deposit_box', 'outdoor_shower', 'gazebo', 'coffee_maker'],
+                'extra_bed_price' => 300000,
+                'base_price' => 1800000,
+                'amenities' => ['private_pool', 'water_heater', 'wifi', 'minibar', 'safe_deposit_box', 'gazebo', 'coffee_maker'],
                 'total_units' => 8,
                 'images' => [
-                    ['url' => 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80', 'tags' => ['pool', 'view'], 'alt' => 'Kolam renang pribadi Garden Pool Villa'],
+                    ['url' => 'https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=1200&q=80', 'tags' => ['pool', 'view'], 'alt' => 'Kolam renang pribadi Garden Pool Villa'],
                     ['url' => 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bedroom'], 'alt' => 'Kamar tidur king Garden Pool Villa'],
                     ['url' => 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bathroom'], 'alt' => 'Kamar mandi Garden Pool Villa'],
                 ],
             ],
             [
-                'slug' => 'one-bedroom-ocean-pool-villa',
-                'name' => 'One Bedroom Ocean Pool Villa',
-                'description' => 'Villa satu kamar tidur dengan kolam renang pribadi menghadap laut lepas dan bathtub di kamar mandi terbuka.',
+                'slug' => 'one-bedroom-mountain-view-villa',
+                'name' => 'One Bedroom Mountain View Villa',
+                'description' => 'Villa satu kamar tidur dengan kolam renang air hangat pribadi menghadap Gunung Gede-Pangrango dan bathtub untuk berendam di udara sejuk.',
                 'translations' => [
-                    'id' => ['name' => 'One Bedroom Ocean Pool Villa', 'description' => 'Villa satu kamar tidur dengan kolam renang pribadi menghadap laut lepas dan bathtub di kamar mandi terbuka.'],
-                    'en' => ['name' => 'One Bedroom Ocean Pool Villa', 'description' => 'A one-bedroom villa with a private pool facing the open ocean and a bathtub in an open-air bathroom.'],
-                    'ja' => ['name' => 'ワンベッドルーム オーシャンプールヴィラ', 'description' => '海を望むプライベートプールと、開放的なバスルームのバスタブを備えたワンベッドルームのヴィラです。'],
+                    'id' => ['name' => 'One Bedroom Mountain View Villa', 'description' => 'Villa satu kamar tidur dengan kolam renang air hangat pribadi menghadap Gunung Gede-Pangrango dan bathtub untuk berendam di udara sejuk.'],
+                    'en' => ['name' => 'One Bedroom Mountain View Villa', 'description' => 'A one-bedroom villa with a heated private pool facing Mount Gede-Pangrango and a bathtub for a warm soak in the cool air.'],
+                    'ja' => ['name' => 'ワンベッドルーム マウンテンビューヴィラ', 'description' => 'ゲデ・パンランゴ山を望む温水プライベートプールと、涼しい空気の中でくつろげるバスタブを備えたワンベッドルームのヴィラです。'],
                 ],
                 'size_sqm' => 150,
                 'max_adults' => 2,
                 'max_children' => 1,
                 'bed_config' => [['type' => 'king', 'count' => 1]],
-                'view_type' => 'ocean',
+                'view_type' => 'mountain',
                 'breakfast_included' => true,
                 'extra_bed_available' => true,
-                'extra_bed_price' => 350000,
-                'base_price' => 3600000,
-                'amenities' => ['private_pool', 'air_conditioning', 'wifi', 'minibar', 'safe_deposit_box', 'bathtub', 'gazebo', 'coffee_maker'],
+                'extra_bed_price' => 300000,
+                'base_price' => 2600000,
+                'amenities' => ['private_pool', 'water_heater', 'wifi', 'minibar', 'safe_deposit_box', 'bathtub', 'fireplace', 'coffee_maker'],
                 'total_units' => 6,
                 'images' => [
-                    ['url' => 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1200&q=80', 'tags' => ['pool', 'view'], 'alt' => 'Kolam pribadi menghadap laut'],
-                    ['url' => 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bedroom'], 'alt' => 'Kamar tidur Ocean Pool Villa'],
+                    ['url' => 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1200&q=80', 'tags' => ['pool', 'view'], 'alt' => 'Kolam pribadi menghadap pegunungan'],
+                    ['url' => 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bedroom'], 'alt' => 'Kamar tidur Mountain View Villa'],
                     ['url' => 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bathroom', 'bathtub'], 'alt' => 'Kamar mandi dengan bathtub'],
                 ],
             ],
             [
                 'slug' => 'two-bedroom-family-pool-villa',
                 'name' => 'Two Bedroom Family Pool Villa',
-                'description' => 'Villa dua kamar tidur dengan ruang keluarga, dapur lengkap, dan kolam renang pribadi, ideal untuk keluarga dengan anak.',
+                'description' => 'Villa dua kamar tidur dengan ruang keluarga berperapian, dapur lengkap, area BBQ, dan kolam renang air hangat pribadi — pas untuk liburan keluarga di Puncak.',
                 'translations' => [
-                    'id' => ['name' => 'Two Bedroom Family Pool Villa', 'description' => 'Villa dua kamar tidur dengan ruang keluarga, dapur lengkap, dan kolam renang pribadi, ideal untuk keluarga dengan anak.'],
-                    'en' => ['name' => 'Two Bedroom Family Pool Villa', 'description' => 'A two-bedroom villa with a living room, a full kitchen and a private pool, ideal for families with children.'],
-                    'ja' => ['name' => 'ツーベッドルーム ファミリープールヴィラ', 'description' => 'リビングルーム、フルキッチン、プライベートプールを備えたツーベッドルームのヴィラで、お子様連れのご家族に最適です。'],
+                    'id' => ['name' => 'Two Bedroom Family Pool Villa', 'description' => 'Villa dua kamar tidur dengan ruang keluarga berperapian, dapur lengkap, area BBQ, dan kolam renang air hangat pribadi — pas untuk liburan keluarga di Puncak.'],
+                    'en' => ['name' => 'Two Bedroom Family Pool Villa', 'description' => 'A two-bedroom villa with a living room and fireplace, a full kitchen, a BBQ area and a heated private pool — made for family getaways in Puncak.'],
+                    'ja' => ['name' => 'ツーベッドルーム ファミリープールヴィラ', 'description' => '暖炉付きのリビング、フルキッチン、BBQエリア、温水プライベートプールを備えたツーベッドルームのヴィラで、プンチャックでの家族旅行にぴったりです。'],
                 ],
                 'size_sqm' => 260,
                 'max_adults' => 4,
@@ -165,12 +163,12 @@ class DemoVillaSeeder extends Seeder
                 'view_type' => 'garden',
                 'breakfast_included' => true,
                 'extra_bed_available' => true,
-                'extra_bed_price' => 400000,
-                'base_price' => 5800000,
-                'amenities' => ['private_pool', 'living_room', 'kitchen', 'air_conditioning', 'wifi', 'safe_deposit_box', 'bathtub', 'gazebo'],
+                'extra_bed_price' => 350000,
+                'base_price' => 4200000,
+                'amenities' => ['private_pool', 'living_room', 'fireplace', 'kitchen', 'bbq_area', 'water_heater', 'wifi', 'bathtub'],
                 'total_units' => 4,
                 'images' => [
-                    ['url' => 'https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bedroom'], 'alt' => 'Kamar tidur utama Family Pool Villa'],
+                    ['url' => 'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bedroom'], 'alt' => 'Kamar tidur utama Family Pool Villa'],
                     ['url' => 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80', 'tags' => ['living_room'], 'alt' => 'Ruang keluarga Family Pool Villa'],
                     ['url' => 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bathroom', 'bathtub'], 'alt' => 'Kamar mandi Family Pool Villa'],
                 ],
@@ -178,25 +176,25 @@ class DemoVillaSeeder extends Seeder
             [
                 'slug' => 'three-bedroom-grand-pool-villa',
                 'name' => 'Three Bedroom Grand Pool Villa',
-                'description' => 'Villa tiga kamar tidur terluas kami dengan kolam renang infinity pribadi menghadap laut, dapur lengkap, dan layanan butler — cocok untuk rombongan atau keluarga besar.',
+                'description' => 'Villa tiga kamar tidur terluas kami dengan kolam infinity air hangat menghadap lembah dan Gunung Gede-Pangrango, perapian, dapur lengkap, area BBQ, dan layanan butler — cocok untuk rombongan atau keluarga besar.',
                 'translations' => [
-                    'id' => ['name' => 'Three Bedroom Grand Pool Villa', 'description' => 'Villa tiga kamar tidur terluas kami dengan kolam renang infinity pribadi menghadap laut, dapur lengkap, dan layanan butler — cocok untuk rombongan atau keluarga besar.'],
-                    'en' => ['name' => 'Three Bedroom Grand Pool Villa', 'description' => 'Our largest villa, with three bedrooms, a private ocean-facing infinity pool, a full kitchen and butler service — made for groups and larger families.'],
-                    'ja' => ['name' => 'スリーベッドルーム グランドプールヴィラ', 'description' => '海を望むプライベートインフィニティプール、フルキッチン、バトラーサービスを備えた最も広いスリーベッドルームのヴィラで、グループや大人数のご家族に最適です。'],
+                    'id' => ['name' => 'Three Bedroom Grand Pool Villa', 'description' => 'Villa tiga kamar tidur terluas kami dengan kolam infinity air hangat menghadap lembah dan Gunung Gede-Pangrango, perapian, dapur lengkap, area BBQ, dan layanan butler — cocok untuk rombongan atau keluarga besar.'],
+                    'en' => ['name' => 'Three Bedroom Grand Pool Villa', 'description' => 'Our largest villa, with three bedrooms, a heated infinity pool overlooking the valley and Mount Gede-Pangrango, a fireplace, a full kitchen, a BBQ area and butler service — made for groups and larger families.'],
+                    'ja' => ['name' => 'スリーベッドルーム グランドプールヴィラ', 'description' => '渓谷とゲデ・パンランゴ山を望む温水インフィニティプール、暖炉、フルキッチン、BBQエリア、バトラーサービスを備えた最も広いスリーベッドルームのヴィラで、グループや大人数のご家族に最適です。'],
                 ],
                 'size_sqm' => 400,
                 'max_adults' => 6,
                 'max_children' => 2,
                 'bed_config' => [['type' => 'king', 'count' => 2], ['type' => 'twin', 'count' => 2]],
-                'view_type' => 'ocean',
+                'view_type' => 'mountain',
                 'breakfast_included' => true,
                 'extra_bed_available' => true,
-                'extra_bed_price' => 400000,
-                'base_price' => 8900000,
-                'amenities' => ['private_pool', 'living_room', 'kitchen', 'butler_service', 'air_conditioning', 'wifi', 'safe_deposit_box', 'bathtub', 'outdoor_shower'],
+                'extra_bed_price' => 350000,
+                'base_price' => 6500000,
+                'amenities' => ['private_pool', 'living_room', 'fireplace', 'kitchen', 'bbq_area', 'butler_service', 'water_heater', 'wifi', 'bathtub'],
                 'total_units' => 2,
                 'images' => [
-                    ['url' => 'https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=1200&q=80', 'tags' => ['pool', 'view'], 'alt' => 'Kolam infinity Grand Pool Villa'],
+                    ['url' => 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1200&q=80', 'tags' => ['view'], 'alt' => 'Pemandangan lembah dari Grand Pool Villa'],
                     ['url' => 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1200&q=80', 'tags' => ['bedroom'], 'alt' => 'Kamar tidur Grand Pool Villa'],
                     ['url' => 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80', 'tags' => ['living_room'], 'alt' => 'Ruang keluarga Grand Pool Villa'],
                 ],
@@ -239,12 +237,12 @@ class DemoVillaSeeder extends Seeder
             [
                 'category' => VillaKnowledgeItem::CATEGORY_GENERAL,
                 'title' => 'Tentang FTS Villa AI',
-                'body' => 'FTS Villa AI adalah kompleks 20 villa privat tepi pantai di Nusa Dua, terdiri dari empat tipe villa satu hingga tiga kamar tidur. Setiap villa memiliki kolam renang pribadi, dan tamu dapat berjalan kaki langsung ke pantai pasir putih.',
+                'body' => 'FTS Villa AI adalah kompleks 20 villa privat di kawasan Puncak, Cisarua, Bogor, terdiri dari empat tipe villa satu hingga tiga kamar tidur. Setiap villa memiliki kolam renang air hangat pribadi, dikelilingi kebun teh dengan udara pegunungan yang sejuk.',
                 'translations' => [
-                    'en' => ['title' => 'About FTS Villa AI', 'body' => 'FTS Villa AI is a beachfront collection of 20 private villas in Nusa Dua, in four villa types from one to three bedrooms. Every villa has its own private pool, and guests can walk straight to the white-sand beach.'],
-                    'ja' => ['title' => 'FTS Villa AIについて', 'body' => 'FTS Villa AIはヌサドゥアのビーチフロントに建つ20棟のプライベートヴィラで、ワンベッドルームからスリーベッドルームまで4タイプをご用意しています。全ヴィラにプライベートプールがあり、白砂のビーチへ徒歩でアクセスできます。'],
+                    'en' => ['title' => 'About FTS Villa AI', 'body' => 'FTS Villa AI is a collection of 20 private villas in the Puncak highlands of Cisarua, Bogor, in four villa types from one to three bedrooms. Every villa has its own heated private pool, surrounded by tea plantations and cool mountain air.'],
+                    'ja' => ['title' => 'FTS Villa AIについて', 'body' => 'FTS Villa AIはボゴール・チサルアのプンチャック高原にある20棟のプライベートヴィラで、ワンベッドルームからスリーベッドルームまで4タイプをご用意しています。全ヴィラに温水プライベートプールがあり、茶畑と涼しい山の空気に囲まれています。'],
                 ],
-                'tags' => ['overview', 'introduction'],
+                'tags' => ['overview', 'introduction', 'puncak', 'bogor'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_POLICIES,
@@ -258,57 +256,67 @@ class DemoVillaSeeder extends Seeder
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_POLICIES,
-                'title' => 'Late check-in setelah tengah malam',
-                'body' => 'Resepsionis villa kami buka 24 jam, jadi tamu dengan penerbangan yang tiba larut malam tetap dapat check-in kapan saja. Staf kami akan mengantar Anda ke villa. Mohon informasikan perkiraan waktu tiba agar villa sudah siap.',
+                'title' => 'Perjalanan ke Puncak dan check-in malam',
+                'body' => 'Jalur Puncak memberlakukan sistem satu arah pada akhir pekan dan hari libur, jadi mohon perhitungkan waktu tempuh lebih lama. Resepsionis villa kami buka 24 jam, sehingga Anda tetap bisa check-in kapan saja; staf kami akan mengantar Anda ke villa. Mohon informasikan perkiraan waktu tiba.',
                 'translations' => [
-                    'en' => ['title' => 'Late-night check-in', 'body' => 'Our villa reception is open 24 hours, so guests arriving on a late flight can still check in at any time, and our staff will walk you to your villa. Please let us know your estimated arrival time so your villa is ready.'],
-                    'ja' => ['title' => '深夜チェックインについて', 'body' => 'レセプションは24時間対応しておりますので、深夜到着の便をご利用のお客様もいつでもチェックインいただけます。スタッフがヴィラまでご案内します。到着予定時刻を事前にお知らせください。'],
+                    'en' => ['title' => 'Getting to Puncak and late check-in', 'body' => 'The Puncak road runs a one-way traffic system on weekends and public holidays, so please allow extra travel time. Our villa reception is open 24 hours, so you can still check in at any time, and our staff will walk you to your villa. Please let us know your estimated arrival time.'],
+                    'ja' => ['title' => 'プンチャックへの道のりと深夜チェックイン', 'body' => 'プンチャック街道では週末・祝日に一方通行規制が実施されるため、移動時間に余裕をもってお越しください。レセプションは24時間対応しておりますので、いつでもチェックインいただけます。スタッフがヴィラまでご案内します。到着予定時刻を事前にお知らせください。'],
                 ],
-                'tags' => ['late check-in', 'flight', 'midnight', 'front desk'],
+                'tags' => ['late check-in', 'traffic', 'one way', 'satu arah', 'front desk'],
+            ],
+            [
+                'category' => VillaKnowledgeItem::CATEGORY_POLICIES,
+                'title' => 'Cuaca dan suhu di Puncak',
+                'body' => 'Suhu di area villa sekitar 18–24°C pada siang hari dan bisa turun hingga 15°C di malam hari, dengan kabut dan hujan yang sering turun di sore hari. Kami sarankan membawa jaket. Semua villa dilengkapi pemanas air dan selimut tebal, serta kolam renang air hangat.',
+                'translations' => [
+                    'en' => ['title' => 'Weather and temperature in Puncak', 'body' => 'Temperatures around the villas are about 18–24°C during the day and can drop to 15°C at night, with mist and afternoon rain common. We recommend bringing a jacket. Every villa has hot water, thick blankets and a heated pool.'],
+                    'ja' => ['title' => 'プンチャックの気候と気温', 'body' => 'ヴィラ周辺の気温は日中約18〜24°C、夜は15°Cまで下がることがあり、霧や午後の雨もよくあります。上着のご持参をおすすめします。全ヴィラに給湯設備、厚手の毛布、温水プールを備えています。'],
+                ],
+                'tags' => ['weather', 'cuaca', 'cold', 'dingin', 'jacket'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_FACILITIES,
-                'title' => 'Kolam renang',
-                'image_url' => 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80',
-                'body' => 'Setiap villa memiliki kolam renang pribadi yang bisa digunakan kapan saja. Selain itu, kolam renang bersama menghadap laut di beach club buka setiap hari pukul 07:00–19:00, dengan handuk gratis di pool bar.',
+                'title' => 'Kolam renang air hangat',
+                'image_url' => 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80',
+                'body' => 'Setiap villa memiliki kolam renang air hangat pribadi yang bisa digunakan kapan saja, nyaman meski udara Puncak sedang dingin. Ada juga kolam renang bersama menghadap kebun teh yang buka setiap hari pukul 07:00–19:00.',
                 'translations' => [
-                    'en' => ['title' => 'Swimming pool', 'body' => 'Every villa has its own private pool you can use at any time. There is also a shared ocean-facing pool at the beach club, open daily from 7:00 AM to 7:00 PM, with free towels at the pool bar.'],
-                    'ja' => ['title' => 'スイミングプール', 'body' => '全ヴィラにプライベートプールがあり、いつでもご利用いただけます。ビーチクラブには海に面した共用プールもあり、毎日7:00〜19:00に営業しています。タオルはプールバーで無料でご利用いただけます。'],
+                    'en' => ['title' => 'Heated swimming pools', 'body' => 'Every villa has its own heated private pool you can use at any time, comfortable even when the Puncak air is cool. There is also a shared pool overlooking the tea plantation, open daily from 7:00 AM to 7:00 PM.'],
+                    'ja' => ['title' => '温水プール', 'body' => '全ヴィラに温水のプライベートプールがあり、プンチャックの涼しい空気の中でもいつでも快適にご利用いただけます。茶畑を望む共用プールも毎日7:00〜19:00に営業しています。'],
                 ],
-                'tags' => ['pool', 'private pool', 'swimming pool', 'hours'],
+                'tags' => ['pool', 'private pool', 'heated pool', 'swimming pool', 'hours'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_FACILITIES,
-                'title' => 'Gym, spa, dan in-villa massage',
-                'image_url' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80',
-                'body' => 'Pusat kebugaran buka 24 jam untuk tamu menginap. Spa buka pukul 10:00–21:00 dengan reservasi terlebih dahulu, dan terapis kami juga bisa datang untuk pijat di villa Anda.',
+                'title' => 'Spa dan jalan pagi di kebun teh',
+                'image_url' => 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?auto=format&fit=crop&w=800&q=80',
+                'body' => 'Spa buka pukul 10:00–21:00 dengan reservasi terlebih dahulu, dan terapis kami juga bisa datang untuk pijat di villa Anda. Setiap pagi pukul 06:30 ada jalan santai gratis bersama pemandu menyusuri kebun teh di sekitar villa.',
                 'translations' => [
-                    'en' => ['title' => 'Gym, spa, and in-villa massage', 'body' => 'The fitness center is open 24 hours for in-house guests. The spa is open from 10:00 AM to 9:00 PM by advance reservation, and our therapists can also come to your villa for a massage.'],
-                    'ja' => ['title' => 'ジム・スパ・ヴィラ内マッサージ', 'body' => 'フィットネスセンターは宿泊のお客様に24時間ご利用いただけます。スパは事前予約制で10:00〜21:00に営業しており、セラピストがヴィラへ伺うマッサージもご利用いただけます。'],
+                    'en' => ['title' => 'Spa and tea plantation morning walk', 'body' => 'The spa is open from 10:00 AM to 9:00 PM by advance reservation, and our therapists can also come to your villa for a massage. Every morning at 6:30 AM there is a free guided walk through the tea plantation around the villas.'],
+                    'ja' => ['title' => 'スパと茶畑の朝散歩', 'body' => 'スパは事前予約制で10:00〜21:00に営業しており、セラピストがヴィラへ伺うマッサージもご利用いただけます。毎朝6:30からは、ヴィラ周辺の茶畑をガイドと歩く無料の散策がございます。'],
                 ],
-                'tags' => ['gym', 'spa', 'massage', 'in-villa'],
+                'tags' => ['spa', 'massage', 'in-villa', 'tea plantation', 'kebun teh', 'walk'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_FACILITIES,
                 'title' => 'Parkir dan Wi-Fi',
                 'image_url' => 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80',
-                'body' => 'Parkir mobil dan motor tersedia gratis bagi tamu menginap. Wi-Fi gratis tersedia di seluruh villa dan fasilitas umum dengan kecepatan yang memadai untuk video call.',
+                'body' => 'Parkir mobil dan motor tersedia gratis bagi tamu menginap, termasuk area untuk minibus rombongan. Wi-Fi gratis tersedia di seluruh villa dan fasilitas umum dengan kecepatan yang memadai untuk video call.',
                 'translations' => [
-                    'en' => ['title' => 'Parking and Wi-Fi', 'body' => 'Free car and motorbike parking is available for in-house guests. Complimentary Wi-Fi covers every villa and all public areas, fast enough for video calls.'],
-                    'ja' => ['title' => '駐車場とWi-Fi', 'body' => '宿泊のお客様は車・バイクの駐車場を無料でご利用いただけます。全ヴィラおよび共用エリアで無料Wi-Fiをご利用いただけ、ビデオ通話にも十分な速度です。'],
+                    'en' => ['title' => 'Parking and Wi-Fi', 'body' => 'Free car and motorbike parking is available for in-house guests, including space for group minibuses. Complimentary Wi-Fi covers every villa and all public areas, fast enough for video calls.'],
+                    'ja' => ['title' => '駐車場とWi-Fi', 'body' => '宿泊のお客様は車・バイクの駐車場を無料でご利用いただけ、団体用ミニバスのスペースもございます。全ヴィラおよび共用エリアで無料Wi-Fiをご利用いただけ、ビデオ通話にも十分な速度です。'],
                 ],
                 'tags' => ['parking', 'wifi'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_DINING,
-                'title' => 'Sarapan',
+                'title' => 'Sarapan dan BBQ',
                 'image_url' => 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=800&q=80',
-                'body' => 'Sarapan disajikan di Restoran Samudra pukul 06:30–10:30, mencakup menu Indonesia dan internasional. Tamu juga bisa memilih sarapan diantar dan disajikan di villa tanpa biaya tambahan. Sarapan sudah termasuk pada semua tipe villa kecuali disebutkan lain.',
+                'body' => 'Sarapan disajikan di Restoran Pakuan pukul 06:30–10:30, dengan menu Sunda dan internasional. Tamu juga bisa memilih sarapan diantar ke villa tanpa biaya tambahan. Paket BBQ malam bisa dipesan untuk villa yang memiliki area BBQ, paling lambat pukul 15:00 di hari yang sama.',
                 'translations' => [
-                    'en' => ['title' => 'Breakfast', 'body' => 'Breakfast is served at Samudra Restaurant from 6:30 AM to 10:30 AM, with both Indonesian and international dishes. Guests can also have breakfast served in their villa at no extra charge. Breakfast is included with every villa type unless stated otherwise.'],
-                    'ja' => ['title' => '朝食について', 'body' => '朝食はサムドラ・レストランにて6:30〜10:30に提供され、インドネシア料理と洋食の両方をお楽しみいただけます。追加料金なしでヴィラでの朝食サービスもご利用いただけます。特に記載がない限り、全てのヴィラタイプに朝食が含まれます。'],
+                    'en' => ['title' => 'Breakfast and BBQ', 'body' => 'Breakfast is served at Pakuan Restaurant from 6:30 AM to 10:30 AM, with Sundanese and international dishes. Guests can also have breakfast served in their villa at no extra charge. Evening BBQ packages can be ordered for villas with a BBQ area, by 3:00 PM on the same day.'],
+                    'ja' => ['title' => '朝食とBBQ', 'body' => '朝食はパクアン・レストランにて6:30〜10:30に提供され、スンダ料理と洋食をお楽しみいただけます。追加料金なしでヴィラでの朝食サービスもご利用いただけます。BBQエリア付きのヴィラでは、当日15:00までのご注文で夕食のBBQパッケージをご利用いただけます。'],
                 ],
-                'tags' => ['breakfast', 'restaurant', 'in-villa dining'],
+                'tags' => ['breakfast', 'restaurant', 'in-villa dining', 'bbq'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_POLICIES,
@@ -332,33 +340,33 @@ class DemoVillaSeeder extends Seeder
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_TRANSPORT,
-                'title' => 'Antar-jemput bandara',
+                'title' => 'Antar-jemput dari Jakarta dan bandara',
                 'image_url' => 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80',
-                'body' => 'Layanan antar-jemput dari dan ke Bandara Internasional Ngurah Rai tersedia dengan biaya tambahan, sekitar 30–40 menit perjalanan. Pemesanan harus dilakukan minimal 24 jam sebelum kedatangan dengan mengirimkan nomor penerbangan.',
+                'body' => 'Layanan antar-jemput tersedia dengan biaya tambahan dari Bandara Soekarno-Hatta (sekitar 2–3 jam), Bandara Halim Perdanakusuma (sekitar 1,5–2 jam), dan Stasiun Bogor (sekitar 1 jam), tergantung kondisi lalu lintas Puncak. Pemesanan minimal 24 jam sebelum kedatangan.',
                 'translations' => [
-                    'en' => ['title' => 'Airport transfer', 'body' => 'Airport transfer to and from Ngurah Rai International Airport is available for an extra fee, about a 30-40 minute drive. Please book at least 24 hours in advance and share your flight number.'],
-                    'ja' => ['title' => '空港送迎', 'body' => 'ングラライ国際空港との送迎サービスを追加料金にてご利用いただけます（所要時間約30〜40分）。到着の24時間前までにフライト番号とあわせてご予約ください。'],
+                    'en' => ['title' => 'Transfers from Jakarta and the airports', 'body' => 'Transfers are available for an extra fee from Soekarno-Hatta Airport (about 2–3 hours), Halim Perdanakusuma Airport (about 1.5–2 hours) and Bogor Station (about 1 hour), depending on Puncak traffic. Please book at least 24 hours before arrival.'],
+                    'ja' => ['title' => 'ジャカルタ・空港からの送迎', 'body' => 'スカルノ・ハッタ国際空港（約2〜3時間）、ハリム・ペルダナクスマ空港（約1.5〜2時間）、ボゴール駅（約1時間）からの送迎サービスを追加料金にてご利用いただけます。所要時間はプンチャックの交通状況により異なります。到着の24時間前までにご予約ください。'],
                 ],
-                'tags' => ['airport transfer', 'ngurah rai', 'transport'],
+                'tags' => ['airport transfer', 'soekarno-hatta', 'halim', 'jakarta', 'stasiun bogor', 'transport'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_TRANSPORT,
                 'title' => 'Atraksi terdekat',
-                'image_url' => 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=800&q=80',
-                'body' => 'Pantai Nusa Dua dapat dicapai dengan berjalan kaki 2 menit. Water Blow Nusa Dua sekitar 5 menit berkendara, dan Pura Uluwatu berjarak sekitar 45 menit berkendara ke arah selatan.',
+                'image_url' => 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=800&q=80',
+                'body' => 'Taman Safari Indonesia sekitar 10 menit berkendara, Kebun Teh Gunung Mas sekitar 15 menit, Telaga Warna dan Curug Cilember masing-masing sekitar 20 menit. Kebun Raya Bogor dapat dicapai sekitar 1 jam berkendara.',
                 'translations' => [
-                    'en' => ['title' => 'Nearby attractions', 'body' => 'Nusa Dua Beach is a 2-minute walk away. Water Blow Nusa Dua is about a 5-minute drive, and Uluwatu Temple is roughly a 45-minute drive to the south.'],
-                    'ja' => ['title' => '近隣の観光スポット', 'body' => 'ヌサドゥア・ビーチまで徒歩2分。ウォーターブロウ・ヌサドゥアまで車で約5分、ウルワツ寺院までは南へ車で約45分です。'],
+                    'en' => ['title' => 'Nearby attractions', 'body' => 'Taman Safari Indonesia is about a 10-minute drive, Gunung Mas Tea Plantation about 15 minutes, and Telaga Warna lake and Cilember Waterfall about 20 minutes each. The Bogor Botanical Gardens are about an hour away by car.'],
+                    'ja' => ['title' => '近隣の観光スポット', 'body' => 'タマン・サファリ・インドネシアまで車で約10分、グヌン・マス茶園まで約15分、テラガ・ワルナ湖とチレンブル滝まではそれぞれ約20分です。ボゴール植物園へは車で約1時間です。'],
                 ],
-                'tags' => ['attractions', 'nusa dua beach', 'uluwatu', 'water blow'],
+                'tags' => ['attractions', 'taman safari', 'kebun teh', 'telaga warna', 'curug', 'kebun raya bogor'],
             ],
             [
                 'category' => VillaKnowledgeItem::CATEGORY_FAQ,
                 'title' => 'Apakah semua villa memiliki bathtub?',
-                'body' => 'Tidak semua. One Bedroom Garden Pool Villa menggunakan shower terbuka, sedangkan One Bedroom Ocean Pool Villa, Two Bedroom Family Pool Villa, dan Three Bedroom Grand Pool Villa dilengkapi bathtub.',
+                'body' => 'Tidak semua. One Bedroom Garden Pool Villa menggunakan shower air hangat, sedangkan One Bedroom Mountain View Villa, Two Bedroom Family Pool Villa, dan Three Bedroom Grand Pool Villa dilengkapi bathtub.',
                 'translations' => [
-                    'en' => ['title' => 'Do all villas have a bathtub?', 'body' => 'Not all of them. The One Bedroom Garden Pool Villa has an outdoor shower only, while the One Bedroom Ocean Pool Villa, Two Bedroom Family Pool Villa, and Three Bedroom Grand Pool Villa come with a bathtub.'],
-                    'ja' => ['title' => '全てのヴィラにバスタブはありますか？', 'body' => '全室ではありません。デラックス ガーデンビューはシャワーのみですが、デラックス オーシャンビュー、ファミリースイート、ハネムーン プールヴィラにはバスタブが付いています。'],
+                    'en' => ['title' => 'Do all villas have a bathtub?', 'body' => 'Not all of them. The One Bedroom Garden Pool Villa has a hot shower only, while the One Bedroom Mountain View Villa, Two Bedroom Family Pool Villa, and Three Bedroom Grand Pool Villa come with a bathtub.'],
+                    'ja' => ['title' => '全てのヴィラにバスタブはありますか？', 'body' => '全ヴィラではありません。ワンベッドルーム ガーデンプールヴィラは温水シャワーのみですが、ワンベッドルーム マウンテンビューヴィラ、ツーベッドルーム ファミリープールヴィラ、スリーベッドルーム グランドプールヴィラにはバスタブが付いています。'],
                 ],
                 'tags' => ['bathtub', 'bathroom', 'faq'],
             ],
