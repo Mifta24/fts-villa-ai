@@ -12,16 +12,22 @@ use Illuminate\Support\Facades\Hash;
 
 class DemoVillaSeeder extends Seeder
 {
+    /**
+     * Production content seeding (villa:seed-demo-content) turns this off, so no
+     * account with a known password is ever created there.
+     */
+    public static bool $withDemoLogin = true;
+
     public function run(): void
     {
-        $owner = User::firstOrCreate(
+        $owner = self::$withDemoLogin ? User::firstOrCreate(
             ['email' => 'owner@ftsvilla.test'],
             [
                 'name' => 'Owner',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]
-        );
+        ) : null;
 
         $villa = Villa::firstOrNew(['name' => 'FTS Villa AI']);
         $villa->fill([
@@ -55,9 +61,11 @@ class DemoVillaSeeder extends Seeder
             'public_status' => 'published',
         ])->save();
 
-        $villa->users()->syncWithoutDetaching([
-            $owner->id => ['role' => 'owner', 'status' => 'active'],
-        ]);
+        if ($owner !== null) {
+            $villa->users()->syncWithoutDetaching([
+                $owner->id => ['role' => 'owner', 'status' => 'active'],
+            ]);
+        }
 
         $unitTypes = $this->unitTypeDefinitions();
 
@@ -89,7 +97,9 @@ class DemoVillaSeeder extends Seeder
 
         $this->seedKnowledgeBase($villa);
 
-        $this->command?->info('Demo login: owner@ftsvilla.test — password: password');
+        if ($owner !== null) {
+            $this->command?->info('Demo login: owner@ftsvilla.test — password: password');
+        }
     }
 
     private function unitTypeDefinitions(): array
