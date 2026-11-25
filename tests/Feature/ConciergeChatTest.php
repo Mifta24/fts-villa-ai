@@ -184,6 +184,18 @@ class ConciergeChatTest extends TestCase
         $this->assertStringContainsString('Treat "this villa" as that villa', $prompt);
     }
 
+    public function test_the_concierge_knows_the_real_villa_type_names_without_a_tool_call(): void
+    {
+        $this->villa->unitTypes()->create(['name' => 'Hidden Suite', 'slug' => 'hidden-suite', 'base_price' => 1, 'max_adults' => 2, 'is_active' => false, 'sort_order' => 9]);
+        $this->fakeReply();
+
+        $this->postJson('/demo/concierge/message', ['guest_token' => $this->startConversation(), 'message' => 'What villa types do you have?'])->assertOk();
+
+        $prompt = $this->systemPromptOfLastRequest();
+        $this->assertStringContainsString('Villa types (use these names and slugs): Deluxe King (deluxe-king)', $prompt);
+        $this->assertStringNotContainsString('Hidden Suite', $prompt);
+    }
+
     public function test_the_concierge_is_told_to_stay_within_the_villa_and_decline_everything_else(): void
     {
         $this->fakeReply();
