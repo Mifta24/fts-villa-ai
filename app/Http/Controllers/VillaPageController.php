@@ -321,10 +321,21 @@ class VillaPageController extends Controller
             'character' => null,
             'anchor' => 'center',
             'text' => $layout['text'],
-            'avatarImage' => asset(self::AVATAR_IMAGE),
+            'avatarImage' => $this->versionedAsset(self::AVATAR_IMAGE),
             'avatarZoom' => '300%',
             'avatarFocus' => '50% 25%',
         ];
+    }
+
+    /**
+     * URL of a character image with its modification time as the version, so a
+     * replaced picture is fetched again instead of served from a CDN cache.
+     */
+    private function versionedAsset(string $path): string
+    {
+        $file = public_path($path);
+
+        return asset($path).(is_file($file) ? '?v='.filemtime($file) : '');
     }
 
     /**

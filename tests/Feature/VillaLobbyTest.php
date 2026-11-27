@@ -474,7 +474,7 @@ class VillaLobbyTest extends TestCase
         $this->get('/demo/units')
             ->assertOk()
             ->assertSee('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4', false)
-            ->assertSee('images/character/character greeting.webp', false)
+            ->assertSee('images/character/character greeting.webp?v='.filemtime(public_path('images/character/character greeting.webp')), false)
             ->assertDontSee('class="stage-character"', false);
 
         // Without a cover photo the lobby falls back to the default villa photo.
